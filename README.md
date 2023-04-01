@@ -61,6 +61,20 @@ By using this tool, you can quickly create custom captcha solvers optimized for 
 
 Note: The use of our tool to exploit or misuse captchas in any way may be against the terms of service of websites that use them, and is not endorsed by this library or its developers.
 
+# Testing
+
+This project provides a set of tests to solve Amazon CAPTCHA problems. It includes the following tests:
+
+1. `TestDownloadCaptchaImages`: Downloads CAPTCHAs from the Amazon CAPTCHA service and saves them to disk if the letters haven't appeared in the dataset before.
+2. `TestSplitAndSaveCaptchaByLetter`: Splits multiple Amazon CAPTCHAs stored in a directory into individual letters and saves them to separate directories for subsequent machine learning modeling.
+3. `TestExtractFeatures`: Calculates image features for each letter extracted from split images, then saves those features to JSON files for further use.
+4. `TestSolveBatch`: Performs batch testing on multiple Amazon CAPTCHAs stored in a directory. Each CAPTCHA is solved using the `Solve` function and compared against the expected answer to determine its accuracy.
+
+## Notes
+
+- This project aims to provide a set of testing tools to solve Amazon CAPTCHA problems but does not guarantee the accuracy of the test results.
+- When using this project, please be respectful of Amazon's terms of service and privacy policy.
+
 ## Acknowledgments
 
 We would like to thank the open-source community for providing inspiration and resources for this project, including [a-maliarov/amazoncaptcha](https://github.com/a-maliarov/amazoncaptcha) which served as a reference for our development. We are grateful for their contributions to the field of captcha solving, and we hope that our library can help further advance this technology.

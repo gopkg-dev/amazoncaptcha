@@ -70,6 +70,31 @@ This project provides a set of tests to solve Amazon CAPTCHA problems. It includ
 3. `TestExtractFeatures`: Calculates image features for each letter extracted from split images, then saves those features to JSON files for further use.
 4. `TestSolveBatch`: Performs batch testing on multiple Amazon CAPTCHAs stored in a directory. Each CAPTCHA is solved using the `Solve` function and compared against the expected answer to determine its accuracy.
 
+```shell
+=== RUN   TestSolveBatch
+    amazoncaptcha_test.go:79: Processing 15316 files with 50 workers...
+    amazoncaptcha_test.go:118: Processing file AAYFJR.jpg... success rate: 100.00%, progress: 0.01%
+    amazoncaptcha_test.go:118: Processing file AAPTPP.jpg... success rate: 100.00%, progress: 0.01%
+    amazoncaptcha_test.go:118: Processing file AAHXBP.jpg... success rate: 100.00%, progress: 0.02%
+    amazoncaptcha_test.go:118: Processing file AAGMCR.jpg... success rate: 100.00%, progress: 0.03%
+    amazoncaptcha_test.go:118: Processing file AAHNGN.jpg... success rate: 100.00%, progress: 0.03%
+    ................
+    amazoncaptcha_test.go:118: Processing file YYRBLN.jpg... success rate: 99.54%, progress: 99.98%
+    amazoncaptcha_test.go:118: Processing file YYRMEU.jpg... success rate: 99.54%, progress: 99.99%
+    amazoncaptcha_test.go:118: Processing file YYRCNK.jpg... success rate: 99.55%, progress: 99.99%
+    amazoncaptcha_test.go:118: Processing file YYYTEM.jpg... success rate: 99.55%, progress: 100.00%
+    amazoncaptcha_test.go:125: Processed 15386 files with success rate: 15316/15386 (99.55%)
+    amazoncaptcha_test.go:128: Failed to solve captcha in the following files:
+    amazoncaptcha_test.go:130: captchas/AGYHRF.jpg -> AGYHR-
+    amazoncaptcha_test.go:130: captchas/AJBLFX.jpg -> AJBL-X
+    amazoncaptcha_test.go:130: captchas/AJLRFY.jpg -> AJLR-Y
+    amazoncaptcha_test.go:130: captchas/APNGHF.jpg -> APNGH-
+    ................
+--- PASS: TestSolveBatch (15.28s)
+PASS
+```
+
+
 ## Notes
 
 - This project aims to provide a set of testing tools to solve Amazon CAPTCHA problems but does not guarantee the accuracy of the test results.

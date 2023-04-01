@@ -74,7 +74,7 @@ func TestSolveBatch(t *testing.T) {
 	}
 
 	var successes, total int32
-	var failedFiles []string // 记录识别失败的文件名
+	var failedFiles []string
 
 	t.Logf("Processing %d files with %d workers...\n", len(testFiles), maxWorkers)
 
@@ -203,7 +203,7 @@ func TestExtractFeatures(t *testing.T) {
 
 	initDir(t)
 
-	featureMap := make(map[string][]string)
+	tmpMap := make(map[string][]string)
 	files, err := os.ReadDir(trainingDataDir)
 	if err != nil {
 		panic(err)
@@ -245,12 +245,12 @@ func TestExtractFeatures(t *testing.T) {
 				}
 			}
 			wg.Wait()
-			featureMap[file.Name()] = removeDuplicates(featureList)
+			tmpMap[file.Name()] = removeDuplicates(featureList)
 		}
 	}
 
 	featureMap2 := make(map[string]string)
-	for k, arr := range featureMap {
+	for k, arr := range tmpMap {
 		for _, v := range arr {
 			featureMap2[v] = k
 		}

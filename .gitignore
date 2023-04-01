@@ -13,3 +13,9 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+/captchas/
+/captchas1/
+/failed_image/
+/training_data/
+/main.py
+/.idea/

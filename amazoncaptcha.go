@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image"
 	"io"
+	"net/http"
+	"os"
 	"strings"
 
 	_ "image/jpeg"
@@ -19,40 +21,6 @@ const MaximumLetterLength = 33
 // MinimumLetterLength Define a constant MinimumLetterLength with a value of 14, representing the minimum width of the first letter.
 // If the width of the first letter is less than this value, all letters will be replaced with blank letters.
 const MinimumLetterLength = 14
-
-// Solve attempts to solve a captcha image and returns a list of character images.
-func Solve(r io.Reader) (string, error) {
-
-	// Call the FindLetters function to extract the letter images from the input image
-	letters, err := FindLetters(r)
-	if err != nil {
-		return "", err
-	}
-
-	// Define a slice to hold the recognition results
-	result := make([]string, len(letters))
-
-	// Loop over each letter image and extract its features
-	for i, letter := range letters {
-		features, err := ExtractFeatures(letter)
-		if err != nil {
-			return "", err
-		}
-		//if v, ok := trainingDataSyncMap.Load(features); ok {
-		//	result[i] = v.(string)
-		//} else {
-		//	result[i] = "-"
-		//}
-		if v, ok := featureMap[features]; ok {
-			result[i] = v
-		} else {
-			result[i] = "-"
-		}
-	}
-
-	// Join the recognition results into a single string and return it
-	return strings.Join(result, ""), nil
-}
 
 // FindLetters attempts to locate the letters in a captcha image and returns a slice of grayscale letter images.
 // It takes an io.Reader as input, which should contain a valid captcha image.
@@ -136,4 +104,83 @@ func FindLetters(r io.Reader) ([]*image.Gray, error) {
 
 	// Join the recognition results into a single string and return it
 	return letters, nil
+}
+
+// Solve attempts to solve a captcha image and returns a list of character images.
+func Solve(r io.Reader) (string, error) {
+
+	// Call the FindLetters function to extract the letter images from the input image
+	letters, err := FindLetters(r)
+	if err != nil {
+		return "", err
+	}
+
+	// Define a slice to hold the recognition results
+	result := make([]string, len(letters))
+
+	// Loop over each letter image and extract its features
+	for i, letter := range letters {
+		features, err := ExtractFeatures(letter)
+		if err != nil {
+			return "", err
+		}
+		//if v, ok := trainingDataSyncMap.Load(features); ok {
+		//	result[i] = v.(string)
+		//} else {
+		//	result[i] = "-"
+		//}
+		if v, ok := featureMap[features]; ok {
+			result[i] = v
+		} else {
+			result[i] = "-"
+		}
+	}
+
+	// Join the recognition results into a single string and return it
+	return strings.Join(result, ""), nil
+}
+
+// SolveFromImageFile takes a file path of an image file as input, opens the file,
+// and processes the data from the image file using the Solve function.
+// It returns the processed result as a string and an error if any error occurs during the process.
+func SolveFromImageFile(filepath string) (string, error) {
+	// Open the image file
+	file, err := os.Open(filepath)
+	if err != nil {
+		return "", fmt.Errorf("failed to open image file: %w", err)
+	}
+	defer file.Close()
+
+	// Use the Solve function to process the data from the image file
+	result, err := Solve(file)
+	if err != nil {
+		return "", fmt.Errorf("failed to solve: %w", err)
+	}
+
+	return result, nil
+}
+
+// SolveFromURL takes a URL string as input, makes an HTTP request to the given URL,
+// and processes the data from the URL using the Solve function.
+// It returns the processed result as a string and an error if any error occurs during the process.
+func SolveFromURL(url string) (string, error) {
+	// Make an HTTP request to the given URL
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("failed to make HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the HTTP response status
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected HTTP status code: %d", resp.StatusCode)
+	}
+
+	// Use the Solve function to process the data from the URL
+	result, err := Solve(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to solve: %w", err)
+	}
+
+	return result, nil
 }

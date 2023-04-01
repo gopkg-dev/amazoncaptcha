@@ -17,6 +17,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -380,4 +381,18 @@ func removeDuplicates(strSlice []string) []string {
 		uniqueSlice = append(uniqueSlice, str)
 	}
 	return uniqueSlice
+}
+
+func TestSolveFromImageFile(t *testing.T) {
+	// Test the SolveFromImageFile function
+	result, err := SolveFromImageFile(path.Join(dirName, "AABTRE.jpg"))
+	assert.NoError(t, err)
+	assert.Equal(t, "AABTRE", result)
+}
+
+func TestSolveFromURL(t *testing.T) {
+	// Test the SolveFromURL function
+	result, err := SolveFromURL("https://images-na.ssl-images-amazon.com/captcha/sargzmyv/Captcha_kvvvwatlha.jpg")
+	assert.NoError(t, err)
+	assert.Equal(t, "MYKYAN", result)
 }

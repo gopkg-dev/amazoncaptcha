@@ -20,27 +20,19 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/gopkg-dev/amazoncaptcha"
 )
 
 func main() {
-	file, err := os.Open("captcha.jpg")
-	if err != nil {
-		fmt.Printf("Error opening captcha file: %v", err)
-		return
-	}
-	defer file.Close()
-
-	result, err := amazoncaptcha.Solve(file)
+	//result, err := amazoncaptcha.Solve()
+	//result, err := amazoncaptcha.SolveFromURL("<URL>")
+	result, err := amazoncaptcha.SolveFromImageFile("captcha.jpg")
 	if err != nil {
 		fmt.Printf("Error solving captcha: %v", err)
 		return
 	}
-
 	fmt.Printf("Captcha solution: %s\n", result)
 }
-
 ```
 
 In this example, we load a captcha image from a file (`"captcha.jpg"`) and solve it using the default solver provided by this library. The result is printed to the console.
@@ -69,6 +61,10 @@ This project provides a set of tests to solve Amazon CAPTCHA problems. It includ
 2. `TestSplitAndSaveCaptchaByLetter`: Splits multiple Amazon CAPTCHAs stored in a directory into individual letters and saves them to separate directories for subsequent machine learning modeling.
 3. `TestExtractFeatures`: Calculates image features for each letter extracted from split images, then saves those features to JSON files for further use.
 4. `TestSolveBatch`: Performs batch testing on multiple Amazon CAPTCHAs stored in a directory. Each CAPTCHA is solved using the `Solve` function and compared against the expected answer to determine its accuracy.
+5. `TestSolveFromImageFile`: Tests the `SolveFromImageFile` function by creating a temporary test image file, using the function to process the image, and checking the returned result for correctness.
+6. `TestSolveFromURL`: Tests the `SolveFromURL` function by using a mock HTTP server, which serves test data from a URL. The function is then used to process the data from the URL, and the returned result is checked for correctness.
+
+Please refer to the [amazoncaptcha_test.go](amazoncaptcha_test.go) file for the actual test implementations.
 
 ```shell
 === RUN   TestSolveBatch

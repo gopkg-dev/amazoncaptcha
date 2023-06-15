@@ -1,0 +1,59 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<script src="wasm_exec.js"></script>
+</head>
+
+<body>
+	<h1>WASM Amazon Captcha Solver</h1>
+	<img src="https://images-na.ssl-images-amazon.com/captcha/docvmtpr/Captcha_ocgqpswsuf.jpg" alt="">
+	<h1>SolveCaptcha Result -> ###### </h1>
+	<script>
+		// This is a polyfill for FireFox and Safari
+		if (!WebAssembly.instantiateStreaming) {
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer()
+				return await WebAssembly.instantiate(source, importObject)
+			}
+		}
+
+		// Promise to load the wasm file
+		function loadWasm(path) {
+			const go = new Go()
+			return new Promise((resolve, reject) => {
+				WebAssembly.instantiateStreaming(fetch(path), go.importObject)
+					.then(result => {
+						go.run(result.instance)
+						resolve(result.instance)
+					})
+					.catch(error => {
+						reject(error)
+					})
+			})
+		}
+
+		// Load the wasm file
+		 loadWasm("main.wasm").then(wasm => {
+		 	console.log("main.wasm is loaded 👋")
+		 	let imageUrl = "https://images-na.ssl-images-amazon.com/captcha/docvmtpr/Captcha_ocgqpswsuf.jpg";
+			fetch(imageUrl)
+				.then(response => response.arrayBuffer())
+				.then(buffer => {
+					let imageData = new Uint8Array(buffer);
+					let result = SolveCaptcha(imageData);
+					console.log(imageData);
+					console.log(result);
+
+					document.querySelector("body > h1:nth-child(3)").innerText = 'SolveCaptcha Result -> ' + result;
+				})
+				.catch(error => {
+					console.error('Error fetching image data:', error);
+				});
+		 }).catch(error => {
+		 	console.log("ouch", error)
+		 })
+	</script>
+</body>
+
+</html>
